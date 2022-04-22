@@ -17,7 +17,7 @@ struct time
 
 struct booking
 {
-    string name;
+    string paxnam;
     vector<string> itinerary;
 
     struct time bookingtime;
@@ -34,42 +34,55 @@ void addBooking(booking b)
 
 string getMonth (int Month)
 {
+    string returnvalue = "";
     switch (Month)
     {
         case 1:
-        return "Jan";
+        returnvalue = "Jan";
+        break;
         case 2:
-        return "Feb";
+        returnvalue = "Feb";
+        break;
         case 3:
-        return "March";  
+        returnvalue = "March";
+        break;  
         case 4:
-        return "April";
+        returnvalue = "April";
+        break;
         case 5:
-        return "May";
+        returnvalue = "May";
+        break;
         case 6:
-        return "June";  
+        returnvalue = "June"; 
+        break; 
         case 7:
-        return "July";
+        returnvalue = "July";
+        break;
         case 8:
-        return "August";
+        returnvalue = "August";
+        break;
         case 9:
-        return "September"; 
+        returnvalue = "September"; 
+        break;
         case 10:
-        return "October";
+        returnvalue = "October";
+        break;
         case 11:
-        return "November";
+        returnvalue = "November";
+        break;
         case 12:
-        return "December";         
+        returnvalue = "December";
+        break;         
     }
 
-    return "-1";
+    return returnvalue;
     
 }
 void displayBooking ()
 {
     for(int i=0 ; i<bookingStructure.size(); i++)
     {
-        cout<<bookingStructure[i].name<<"  "<<getMonth(bookingStructure[i].bookingtime.month);
+        cout<<bookingStructure[i].paxnam<<"  "<<getMonth(bookingStructure[i].bookingtime.month);
         cout<<":"<<bookingStructure[i].bookingtime.day<<"  ";
         cout<<bookingStructure[i].bookingtime.hour<<":"<<bookingStructure[i].bookingtime.minute<<"  ";
         cout<<bookingStructure[i].bookingtime.year<<"  ";
@@ -98,12 +111,12 @@ vector<booking> selectBookingBeforeSpecificTime (struct time givenTime)
     {
         if(bookingStructure[i].bookingtime.year<=givenTime.year) // Compare Year
         {
-            if(bookingStructure[i].bookingtime.year<givenTime.year) // Previous year , add to vector
+           if(bookingStructure[i].bookingtime.year<givenTime.year) // Previous year , add to vector
             {
                 selectedbookings.push_back(bookingStructure[i]);
                 continue;
             }
-            else  //Same year
+            else //Same Year
             {
                 if(bookingStructure[i].bookingtime.month<=givenTime.month) // Compare month
                 {
@@ -112,43 +125,37 @@ vector<booking> selectBookingBeforeSpecificTime (struct time givenTime)
                         selectedbookings.push_back(bookingStructure[i]);
                         continue;
                     }
-                } 
-                else //Same month
-                {
-                    if(bookingStructure[i].bookingtime.day<=givenTime.day) // Compare day
-                    {
-                        if(bookingStructure[i].bookingtime.day<givenTime.day) // Previous day , add to vector
+                    else // same month
+                    {   
+                        if(bookingStructure[i].bookingtime.day<=givenTime.day) // Compare day
                         {
-                            selectedbookings.push_back(bookingStructure[i]);
-                            continue;
-                        }
-                    } 
-                    else // Same Day
-                    {
-
-                        if(bookingStructure[i].bookingtime.hour<=givenTime.hour) // Compare hour
-                        {
-                            if(bookingStructure[i].bookingtime.hour<givenTime.hour) // Previous hour , add to vector
+                            if(bookingStructure[i].bookingtime.day<givenTime.day) // Previous day , add to vector
                             {
                                 selectedbookings.push_back(bookingStructure[i]);
                                 continue;
                             }
-                        }
-                        else 
-                        {
-                            if(bookingStructure[i].bookingtime.minute<=givenTime.minute) // Compare hour
+                            else //same day
                             {
-                                if(bookingStructure[i].bookingtime.minute<givenTime.minute) // Previous minute , add to vector
+                                if(bookingStructure[i].bookingtime.hour<=givenTime.hour) // Compare hour
                                 {
-                                    selectedbookings.push_back(bookingStructure[i]);
-                                    continue;
+                                    if(bookingStructure[i].bookingtime.hour<givenTime.hour) // Previous hour , add to vector
+                                    {
+                                        selectedbookings.push_back(bookingStructure[i]);
+                                        continue;
+                                    }
+                                    else // same hour
+                                    {
+                                        if(bookingStructure[i].bookingtime.minute<=givenTime.minute) // Compare hour
+                                        {
+                                            selectedbookings.push_back(bookingStructure[i]);
+                                            continue;
+                                        }  
+                                    }
                                 }
-                            }  
+                            } 
                         }
-
                     }
-                    
-                }
+                } 
             }
         }
     }
@@ -158,15 +165,7 @@ vector<booking> selectBookingBeforeSpecificTime (struct time givenTime)
 
 }
 
-/*
- struct booking
-{
-    string name;
-    vector<string> itinerary;
 
-    struct time bookingtime;
-
-};*/
 
 
 vector<booking> selectSpecificItineary (vector<string> itineary)
@@ -174,20 +173,21 @@ vector<booking> selectSpecificItineary (vector<string> itineary)
         vector<booking> selectedBookings;
         bool matchIT ;
 
+
         for (int i = 0 ; i<bookingStructure.size();i++)
         {
-            struct  booking currentbooking = selectedBookings[i];
+            booking currentbooking = bookingStructure[i];
             matchIT = false;
             // Element to be searched
             string ser = itineary[0];
             
             // std::find function call
-            std::vector<string>::iterator it  = std::find (currentbooking.itinerary.begin(), currentbooking.itinerary.end(), ser);
+            auto it  = find (currentbooking.itinerary.begin(), currentbooking.itinerary.end(), ser);
 
             if(it != currentbooking.itinerary.end())
             {
                 int index = it - currentbooking.itinerary.begin();
-                matchIT = std::equal(itineary.begin(), itineary.end(), currentbooking.itinerary.begin() + index);
+                matchIT = equal(itineary.begin(), itineary.end(), currentbooking.itinerary.begin() + index);
             }
 
             if(matchIT)
@@ -206,21 +206,82 @@ int main()
 
     booking test;
 
-    test.name="Mina";
+//Booking 1:
+
+    test.paxnam="Mina";
     test.itinerary.push_back("AMS");
     test.itinerary.push_back("CAI"); 
+    test.itinerary.push_back("FRA"); 
 
     test.bookingtime.year=2022;
     test.bookingtime.month=04;
     test.bookingtime.day=01;
 
     test.bookingtime.hour= 7;
-    test.bookingtime.minute = 30;
+    test.bookingtime.minute = 29;
 
     addBooking(test);
+    
+    
+//Booking 2:
+
+    booking test2;
+
+    test2.paxnam="Ahmed";
+    test2.itinerary.push_back("AMS");
+    test2.itinerary.push_back("CAI"); 
+    test2.itinerary.push_back("FRA"); 
+    test2.itinerary.push_back("GER");
+
+
+    test2.bookingtime.year=2022;
+    test2.bookingtime.month=04;
+    test2.bookingtime.day=01;
+
+    test2.bookingtime.hour= 7;
+    test2.bookingtime.minute = 30;
+
+    addBooking(test2);
+    
+    
     displayBooking();
 
-    cout<<"Test ss"<<endl;
 
+
+    // test select specific Itineary
+
+    vector<string> itineary;
+    itineary.push_back("FRA");
+    itineary.push_back("GER");
+
+     
+    auto outputselectSpecificItineary = selectSpecificItineary(itineary);
+
+    cout<<"outputSize:"<< outputselectSpecificItineary.size()<<endl;
+
+    for(int i =0 ; i<outputselectSpecificItineary.size() ; i++)
+    {
+        cout<<outputselectSpecificItineary[i].paxnam<<endl;
+    }
+    cout<<"*******************"<<endl;
+    // test selectBookingBeforeSpecificTime
+
+    struct time t;
+    t.year = 2022;
+    t.month = 4;
+    t.day = 1;
+    t.hour = 7;
+    t.minute = 28;
+
+    auto outputselectSpecificTime = selectBookingBeforeSpecificTime(t);
+
+    cout<<"outputSize:"<< outputselectSpecificTime.size()<<endl;
+
+    for(int i =0 ; i<outputselectSpecificTime.size() ; i++)
+    {
+        cout<<outputselectSpecificTime[i].paxnam<<endl;
+    }
+
+ 
     return 0;
 }
